@@ -1,0 +1,7 @@
+# lo que genera el lab: no es parte del kit
+logs/
+*.estado.json
+triagebot-pro*/
+__pycache__/
+.DS_Store
+consumo.csv
