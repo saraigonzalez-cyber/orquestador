@@ -41,7 +41,7 @@ MODELOS_OPENROUTER = {       # alias de Claude Code -> modelo en OpenRouter
     "sonnet": "~anthropic/claude-sonnet-latest",
     "haiku": "~anthropic/claude-haiku-latest",
 }
-MODELO_IMPL = "sonnet"       # "opus", "sonnet" o "haiku"
+MODELO_IMPL = "haiku"       # "opus", "sonnet" o "haiku"
 MODELO_REV = None            # None = el mismo que el implementador
 
 HERRAMIENTAS_BASE_IMPL = ["Read", "Edit", "Write", "Glob", "Grep", "Bash(git status:*)", "Bash(git diff:*)", "Bash(ls:*)"]
