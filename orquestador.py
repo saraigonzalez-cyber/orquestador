@@ -41,7 +41,7 @@ MODELOS_OPENROUTER = {       # alias de Claude Code -> modelo en OpenRouter
     "sonnet": "~anthropic/claude-sonnet-latest",
     "haiku": "~anthropic/claude-haiku-latest",
 }
-MODELO_IMPL = "haiku"       # "opus", "sonnet" o "haiku"
+MODELO_IMPL = "sonnet"       # "opus", "sonnet" o "haiku"
 MODELO_REV = None            # None = el mismo que el implementador
 
 HERRAMIENTAS_BASE_IMPL = ["Read", "Edit", "Write", "Glob", "Grep", "Bash(git status:*)", "Bash(git diff:*)", "Bash(ls:*)"]
@@ -183,9 +183,16 @@ def comprobar_claude(repo, modelo=None):
         code, out = sh(cmd, cwd=repo, timeout=120, env=ENTORNO)
     except FileNotFoundError:
         raise ClaudeNoResponde("No encuentro el comando claude. ¿Está instalado Claude Code y en el PATH?")
-    try:
-        data = json.loads(out.strip().splitlines()[-1])
-    except (json.JSONDecodeError, IndexError):
+    data = None
+    for linea in reversed(out.strip().splitlines()):   # puede haber avisos después del JSON
+        linea = linea.strip()
+        if linea.startswith("{") and '"type":"result"' in linea.replace(" ", ""):
+            try:
+                data = json.loads(linea)
+                break
+            except json.JSONDecodeError:
+                pass
+    if data is None:
         raise ClaudeNoResponde(f"claude no responde bien (código {code}):\n{out[-1500:]}")
     if data.get("is_error"):
         raise ClaudeNoResponde(f"claude devuelve un error: {data.get('result') or data}")
